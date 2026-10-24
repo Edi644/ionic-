@@ -1,0 +1,7 @@
+{
+  "name": "appcinea",
+  "integrations": {
+    "capacitor": {}
+  },
+  "type": "angular-standalone"
+}
