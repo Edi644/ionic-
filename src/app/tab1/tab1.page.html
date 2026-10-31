@@ -1,17 +1,33 @@
-<ion-header [translucent]="true">
-  <ion-toolbar>
-    <ion-title>
-      Tab 1
-    </ion-title>
-  </ion-toolbar>
-</ion-header>
-
 <ion-content [fullscreen]="true">
-  <ion-header collapse="condense">
-    <ion-toolbar>
-      <ion-title size="large">Tab 1</ion-title>
-    </ion-toolbar>
-  </ion-header>
+  <div class="ion-padding">
+    <h1>Anuncios</h1>
 
-  <app-explore-container name="Tab 1 page"></app-explore-container>
+
+    @if (!isLoading() && !errorMessage() && anuncios().length) {
+      <ion-list>
+        @for (anuncio of anuncios(); track anuncio.idAnuncio ?? anuncio.idanuncio ?? $index) {
+          <ion-item>
+            <ion-label>
+              @if (anuncio.imagen) {
+                <img
+                  [src]="anuncio.imagen"
+                  [alt]="anuncio.titulo || 'Anuncio'"
+                  style="max-width: 100%; border-radius: 8px;" />
+              }
+              <h2>{{ anuncio.titulo || 'Anuncio' }}</h2>
+              @if (anuncio.descripcion) {
+                <p>{{ anuncio.descripcion }}</p>
+              }
+              @if (anuncio.fechaPublicacion) {
+                <p>{{ anuncio.fechaPublicacion | date:'short' }}</p>
+              }
+            </ion-label>
+          </ion-item>
+        }
+      </ion-list>
+    }
+    @if (!isLoading() && !errorMessage() && !anuncios().length) {
+      <p>No hay anuncios disponibles.</p>
+    }
+  </div>
 </ion-content>

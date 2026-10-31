@@ -1,0 +1,72 @@
+<ion-content class="login-content">
+  <main class="login-wrapper">
+    <ion-card>
+      <ion-card-header>
+        <ion-title>AppCinea</ion-title>
+        <ion-card-title>
+          {{ isRegistering ? 'Crear cuenta' : 'Iniciar sesión' }}
+        </ion-card-title>
+      </ion-card-header>
+
+      <ion-card-content>
+        <form (ngSubmit)="submit()">
+          @if (isRegistering) {
+            <ion-item>
+              <ion-input
+                label="Nombre"
+                labelPlacement="stacked"
+                name="nombre"
+                [(ngModel)]="newUser.nombre"
+                autocomplete="name"
+                required>
+              </ion-input>
+            </ion-item>
+          }
+
+          <ion-item>
+            <ion-input
+              label="Correo electrónico"
+              labelPlacement="stacked"
+              type="email"
+              name="email"
+              [(ngModel)]="credentials.email"
+              autocomplete="email"
+              required>
+            </ion-input>
+          </ion-item>
+
+          <ion-item>
+            <ion-input
+              label="Contraseña"
+              labelPlacement="stacked"
+              type="password"
+              name="password"
+              [(ngModel)]="credentials.password"
+              [autocomplete]="isRegistering ? 'new-password' : 'current-password'"
+              required>
+            </ion-input>
+          </ion-item>
+
+          @if (errorMessage) {
+            <ion-text color="danger">
+              <p role="alert">{{ errorMessage }}</p>
+            </ion-text>
+          }
+          @if (successMessage) {
+            <ion-text color="success">
+              <p role="status">{{ successMessage }}</p>
+            </ion-text>
+          }
+
+          <ion-button expand="block" type="submit" [disabled]="isLoading">
+            {{ isLoading ? 'Procesando…' : (isRegistering ? 'Crear cuenta' : 'Entrar') }}
+          </ion-button>
+        </form>
+
+        <ion-button expand="block" fill="clear" (click)="toggleMode()" [disabled]="isLoading">
+          {{ isRegistering ? 'Ya tengo una cuenta' : 'Crear una cuenta nueva' }}
+        </ion-button>
+      </ion-card-content>
+    </ion-card>
+  </main>
+</ion-content>

@@ -1,0 +1,31 @@
+.login-content {
+  --background: var(--ion-color-light);
+}
+
+.login-wrapper {
+  display: grid;
+  min-height: 100%;
+  place-items: center;
+  padding: 24px;
+}
+
+ion-card {
+  width: min(100%, 440px);
+}
+
+ion-card-header {
+  text-align: center;
+}
+
+ion-card-title {
+  display: block;
+  margin-top: 16px;
+}
+
+ion-item {
+  margin-bottom: 12px;
+}
+
+ion-text p {
+  margin: 8px 0;
+}

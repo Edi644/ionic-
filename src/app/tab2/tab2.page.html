@@ -1,17 +1,42 @@
-<ion-header [translucent]="true">
+<ion-header>
   <ion-toolbar>
-    <ion-title>
-      Tab 2
-    </ion-title>
+    <ion-title>Funciones</ion-title>
   </ion-toolbar>
 </ion-header>
 
-<ion-content [fullscreen]="true">
-  <ion-header collapse="condense">
-    <ion-toolbar>
-      <ion-title size="large">Tab 2</ion-title>
-    </ion-toolbar>
-  </ion-header>
+<ion-content>
+  <div class="ion-padding">
+    @if (errorMessage()) {
+      <ion-text color="danger">
+        <p role="alert">{{ errorMessage() }}</p>
+      </ion-text>
+    }
 
-  <app-explore-container name="Tab 2 page"></app-explore-container>
+    @if (isLoading()) {
+      <div class="ion-text-center">
+        <ion-spinner aria-label="Cargando funciones"></ion-spinner>
+      </div>
+    } @else if (funciones().length) {
+      <ion-list>
+        @for (funcion of funciones(); track funcion.idFuncion) {
+          <ion-item>
+            <ion-label>
+              <h2>
+                {{
+                  funcion.pelicula?.titulo
+                    || ((funcion.idPelicula ?? funcion.pelicula?.idPelicula) | pelicula: peliculas())
+                    || ('Función ' + funcion.idFuncion)
+                }}
+              </h2>
+              <p>Función {{ funcion.idFuncion }}</p>
+              <p>{{ funcion.fecha || 'Sin fecha' }} · {{ funcion.hora || 'Sin hora' }}</p>
+              <p>Precio: Q{{ funcion.precioEntrada ?? 0 | number:'1.2-2' }}</p>
+            </ion-label>
+          </ion-item>
+        }
+      </ion-list>
+    } @else if (!errorMessage()) {
+      <p>Aún no hay funciones disponibles.</p>
+    }
+  </div>
 </ion-content>

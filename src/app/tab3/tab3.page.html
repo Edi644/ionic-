@@ -1,17 +1,57 @@
-<ion-header [translucent]="true">
-  <ion-toolbar>
-    <ion-title>
-      Tab 3
-    </ion-title>
-  </ion-toolbar>
-</ion-header>
+<ion-content class="ion-padding">
+  <h1>Proceso de reserva</h1>
 
-<ion-content [fullscreen]="true">
-  <ion-header collapse="condense">
-    <ion-toolbar>
-      <ion-title size="large">Tab 3</ion-title>
-    </ion-toolbar>
-  </ion-header>
+  @if (clienteErrorMessage) {
+    <p role="alert">{{ clienteErrorMessage }}</p>
+  }
+  @if (errorMessage) {
+    <p role="alert">{{ errorMessage }}</p>
+  }
+  @if (successMessage) {
+    <p role="status">{{ successMessage }}</p>
+  }
 
-  <app-explore-container name="Tab 3 page"></app-explore-container>
+  <label for="idFuncion">Función</label>
+  <select
+    id="idFuncion"
+    name="idFuncion"
+    [value]="idFuncion ?? ''"
+    (change)="actualizarFuncionSeleccionada($event)"
+    required>
+    <option value="">Selecciona una función</option>
+    @for (funcion of funciones; track funcion.idFuncion) {
+      <option [value]="funcion.idFuncion">
+        {{
+          funcion.pelicula?.titulo
+            || ((funcion.idPelicula ?? funcion.pelicula?.idPelicula) | pelicula: peliculas)
+        }}
+        - {{ funcion.fecha || 'Sin fecha' }} ({{ funcion.hora || 'Sin hora' }})
+        - Q{{ funcion.precioEntrada ?? 0 }}
+      </option>
+    }
+  </select>
+
+  <label for="cantidadEntradas">Cantidad de entradas</label>
+  <input
+    id="cantidadEntradas"
+    type="number"
+    min="1"
+    step="1"
+    [value]="cantidadEntradas ?? ''"
+    (input)="actualizarCantidadEntradas($event)"
+    placeholder="Ej. 2"
+    required>
+
+  <button
+    type="button"
+    (click)="crearReserva()"
+    [disabled]="isSaving || isLoadingCliente || idCliente === null || !funciones.length">
+    {{
+      isSaving
+        ? 'Guardando...'
+        : isLoadingCliente
+          ? 'Buscando cliente...'
+          : 'Confirmar reserva'
+    }}
+  </button>
 </ion-content>
