@@ -10,12 +10,14 @@ import { PeliculaPipe } from '../pelicula.pipe';
 interface Pelicula {
   idPelicula: number;
   titulo: string;
+  idClasificacion?: number;
+  clasificacion?: { nombre?: string };
 }
 
 interface Funcion {
   idFuncion: number;
   idPelicula?: number;
-  pelicula?: { idPelicula?: number; titulo?: string };
+  pelicula?: Pelicula;
   fecha?: string;
   hora?: string;
   precioEntrada?: number;
@@ -32,6 +34,10 @@ interface ReservaRequest {
   cantidadEntradas: number;
   totalAPagar: number;
   fechaReserva: string;
+}
+interface Clasificacion {
+  idClasificacion: number;
+  nombre: string;
 }
 
 @Component({
@@ -55,11 +61,13 @@ export class Tab3Page {
   clienteErrorMessage = '';
   errorMessage = '';
   successMessage = '';
+  clasificaciones: Clasificacion[] = [];
 
   constructor() {
     this.buscarClienteUsuario();
     this.buscarPeliculas();
     this.buscarFunciones();
+    this.buscarClasificaciones();
   }
 
   private buscarClienteUsuario(): void {
@@ -157,6 +165,41 @@ export class Tab3Page {
         this.errorMessage = getApiErrorMessage(error, 'No se pudieron cargar las funciones');
       },
     });
+  }
+
+  private buscarClasificaciones(): void {
+    this.http.get<Clasificacion[]>(`${environment.apiUrl}/clasificacion/buscar`).subscribe({
+      next: (data) => {
+        if (!Array.isArray(data)) {
+          this.errorMessage = 'El servidor devolvió una lista de clasificaciones no válida.';
+          return;
+        }
+        this.clasificaciones = data;
+      },
+      error: (error: unknown) => {
+        this.errorMessage = getApiErrorMessage(
+          error,
+          'No se pudieron cargar las clasificaciones',
+        );
+      },
+    });
+  }
+
+  peliculaDeFuncion(funcion: Funcion): Pelicula | undefined {
+    const idPelicula = funcion.idPelicula ?? funcion.pelicula?.idPelicula;
+    return funcion.pelicula ?? this.peliculas.find((pelicula) => pelicula.idPelicula === idPelicula);
+  }
+
+  nombreClasificacion(funcion: Funcion): string {
+    const pelicula = this.peliculaDeFuncion(funcion);
+    const idClasificacion = pelicula?.idClasificacion;
+    return (
+      pelicula?.clasificacion?.nombre
+      || this.clasificaciones.find(
+        (clasificacion) => clasificacion.idClasificacion === idClasificacion,
+      )?.nombre
+      || 'Sin clasificación'
+    );
   }
 
   actualizarFuncionSeleccionada(event: Event): void {

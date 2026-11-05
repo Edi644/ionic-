@@ -1,15 +1,7 @@
 <ion-content class="ion-padding">
-  <h1>Proceso de reserva</h1>
+  <h1>Proceso de tiket</h1>
 
-  @if (clienteErrorMessage) {
-    <p role="alert">{{ clienteErrorMessage }}</p>
-  }
-  @if (errorMessage) {
-    <p role="alert">{{ errorMessage }}</p>
-  }
-  @if (successMessage) {
-    <p role="status">{{ successMessage }}</p>
-  }
+
 
   <label for="idFuncion">Función</label>
   <select
@@ -31,6 +23,42 @@
     }
   </select>
 
+  @if (idFuncion !== null) {
+    @for (funcion of funciones; track funcion.idFuncion) {
+      @if (funcion.idFuncion === idFuncion) {
+        <h2>Datos del ticket</h2>
+        <table>
+          <tbody>
+            <tr>
+              <th scope="row">Película</th>
+              <td>{{ peliculaDeFuncion(funcion)?.titulo || 'Sin película' }}</td>
+            </tr>
+            <tr>
+              <th scope="row">Clasificación</th>
+              <td>{{ nombreClasificacion(funcion) }}</td>
+            </tr>
+            <tr>
+              <th scope="row">Fecha</th>
+              <td>{{ funcion.fecha || 'Sin fecha' }}</td>
+            </tr>
+            <tr>
+              <th scope="row">Hora</th>
+              <td>{{ funcion.hora || 'Sin hora' }}</td>
+            </tr>
+            <tr>
+              <th scope="row">Precio por entrada</th>
+              <td>Q{{ funcion.precioEntrada ?? 0 }}</td>
+            </tr>
+            <tr>
+              <th scope="row">Cantidad</th>
+              <td>{{ cantidadEntradas ?? 'Sin seleccionar' }}</td>
+            </tr>
+          </tbody>
+        </table>
+      }
+    }
+  }
+
   <label for="cantidadEntradas">Cantidad de entradas</label>
   <input
     id="cantidadEntradas"
@@ -48,10 +76,11 @@
     [disabled]="isSaving || isLoadingCliente || idCliente === null || !funciones.length">
     {{
       isSaving
-        ? 'Guardando...'
+        ? 'Guardado'
         : isLoadingCliente
           ? 'Buscando cliente...'
-          : 'Confirmar reserva'
+          : 'Confirmar tiket'
+          
     }}
   </button>
 </ion-content>
